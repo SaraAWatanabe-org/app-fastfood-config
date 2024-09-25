@@ -7,22 +7,6 @@ on:
         description: 'Fastfoof AKS cluster'
         required: true
         default: 'aks-cluster'
-      resource_group:
-        description: 'Name of the resource group'
-        required: true
-        default: 'aks-rg'
-      location:
-        description: 'Location of the resource group'
-        required: true
-        default: 'us-east-1'
-      node_count:
-        description: 'Number of nodes in the AKS cluster'
-        required: true
-        default: '1'
-      node_vm_size:
-        description: 'Size of the VMs in the AKS cluster'
-        required: true
-        default: 'Standard_B2s'
       action:
         description: 'Deploy ou Destroy'
         required: true
@@ -59,6 +43,13 @@ jobs:
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    - name: Upload Terraform state
+      uses: actions/upload-artifact@v2
+      with:
+        name: terraform-state
+        path: terraform.tfstate
+
   terraform-destroy: 
     runs-on: ubuntu-latest
     steps:
@@ -69,6 +60,11 @@ jobs:
       uses: hashicorp/setup-terraform@v1
       with:
         terraform_version: 1.0.0
+        
+    - name: Download Terraform state
+      uses: actions/download-artifact@v2
+      with:
+        name: terraform-state
 
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
