@@ -1,0 +1,76 @@
+name: AKS deployment workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      cluster_name:
+        description: 'Fastfoof AKS cluster'
+        required: true
+        default: 'aks-cluster'
+      resource_group:
+        description: 'Name of the resource group'
+        required: true
+        default: 'aks-rg'
+      location:
+        description: 'Location of the resource group'
+        required: true
+        default: 'us-east-1'
+      node_count:
+        description: 'Number of nodes in the AKS cluster'
+        required: true
+        default: '1'
+      node_vm_size:
+        description: 'Size of the VMs in the AKS cluster'
+        required: true
+        default: 'Standard_B2s'
+      action:
+        description: 'Deploy ou Destroy'
+        required: true
+        default: 'deploy'
+        type: choice
+        options:
+          - terraform-deploy
+          - terraform-destroy
+
+jobs:
+  terraform-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.8.0
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform validade
+      run: terraform validate
+
+    - name: Terraform Plan
+      run: terraform plan -output=plan.out
+
+    - name: Terraform Apply
+      run: terraform apply plan.out 
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  terraform-destroy: 
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.0.0
+
+    - name: Terraform Destroy
+      run: terraform destroy -auto-approve
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
