@@ -20,13 +20,14 @@ resource "aws_db_subnet_group" "rds_subnet_group" {
 resource "aws_security_group" "rds_sg" {
   vpc_id = module.vpc.vpc_id
 
+  #inbound
   ingress {
     from_port   = 3306
     to_port     = 3306
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
+  #outbound
   egress {
     from_port   = 0
     to_port     = 0

@@ -33,5 +33,5 @@ jobs:
       - name: Kube Apply LoadBalancer
         run: kubectl apply  k8s/load-balancer.yaml
       - name: Kube Apply App
-        run: kubectl apply  k8s/deploiment.yaml
+        run: kubectl apply  k8s/deployment.yaml
       

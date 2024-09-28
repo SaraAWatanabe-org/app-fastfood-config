@@ -13,11 +13,11 @@ on:
         default: 'deploy'
         type: choice
         options:
-          - terraform-deploy
+          - terraform-apply
           - terraform-destroy
 
 jobs:
-  terraform-deploy:
+  terraform-apply:
     runs-on: ubuntu-latest
 
     steps:
@@ -51,15 +51,6 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-    - name: Upload Terraform state
-      uses: actions/upload-artifact@v2
-      with:
-        name: terraform-state
-        path: ./terraform.tfstate
-        
-    - name: Workspace view
-      run: ls -R
-
   terraform-destroy: 
     runs-on: ubuntu-latest
     steps:
@@ -70,15 +61,7 @@ jobs:
       uses: hashicorp/setup-terraform@v1
       with:
         terraform_version: 1.0.0
-        
-    - name: Download Terraform state
-      uses: actions/download-artifact@v2
-      with:
-        name: terraform-state
-        path: ./terraform.tfstate
 
-    - name: Workspace view
-      run: ls -R
 
     - name: Terraform Destroy
       run: terraform destroy -auto-approve

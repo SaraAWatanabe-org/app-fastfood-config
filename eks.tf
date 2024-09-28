@@ -26,7 +26,7 @@ module "eks" {
     ami_type       = "AL2_x86_64"
     instance_types = ["m5.large"]
 
-    attach_cluster_primary_security_group = true
+    attach_cluster_primary_security_group = false
   }
 
 
@@ -45,5 +45,4 @@ module "eks" {
     }
   }
 
-  tags = var.tags
 }
