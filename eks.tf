@@ -29,6 +29,7 @@ module "eks" {
     attach_cluster_primary_security_group = true
   }
 
+
   eks_managed_node_groups = {
     fastfood-cluster-wg = {
       min_size     = 1
@@ -43,7 +44,6 @@ module "eks" {
       }
     }
   }
-
 
   tags = var.tags
 }
