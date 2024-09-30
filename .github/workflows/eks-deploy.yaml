@@ -44,7 +44,7 @@ jobs:
       run: terraform validate
 
     - name: Terraform Plan
-      run: terraform plan -outp plan.out
+      run: terraform plan -out plan.out
 
     - name: Terraform Apply
       run: terraform apply plan.out 
