@@ -4,7 +4,7 @@ on:
 
 env:
   REGION_DEFAULT: "us-east-1"
-  CLUSTER_NAME: "EKS-FIAP"
+  CLUSTER_NAME: "cluster-fastfood"
 jobs:
   deploy:
     name: Deploy AWS Academy
