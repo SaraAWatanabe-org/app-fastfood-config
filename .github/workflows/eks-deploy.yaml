@@ -18,6 +18,7 @@ on:
 
 jobs:
   terraform-apply:
+    if: ${{ github.event.inputs.action == 'terraform-apply' }}
     runs-on: ubuntu-latest
     env:
       REGION_DEFAULT: us-east-1
@@ -52,6 +53,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   terraform-destroy: 
+    if: ${{ github.event.inputs.action == 'terraform-destroy' }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository

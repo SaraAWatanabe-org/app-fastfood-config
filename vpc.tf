@@ -5,10 +5,10 @@ module "vpc" {
   name = var.name
   cidr = var.vpc_cidr
 
-  azs             = var.azs
+  azs = var.azs
   private_subnets = var.private_subnets
-  public_subnets  = var.public_subnets
-  intra_subnets   = var.intra_subnets
+  public_subnets = var.public_subnets
+  intra_subnets  = var.intra_subnets
 
   enable_nat_gateway = true
 
@@ -18,5 +18,8 @@ module "vpc" {
 
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" = 1
+  }
+  tags = {
+    ExtraTag = "FastFood"
   }
 }
