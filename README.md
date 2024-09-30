@@ -1,47 +1,40 @@
 # Repositório para provisionamento de infraesturura para o projeto Fastfood
 
-Este repositório contém arquivos Terraform para provisionamento de infraestutura na AWS.
+## Este repositório contém arquivos Terraform para provisionamento de infraestutura EKS na AWS.
 
 
-Para rodar localmente, é necessário:
+## Iniciando
 
->>1. configurar as credenciais aws
-```aws configure
-AWS Access Key ID [None]: Valor
-AWS Secret Access Key [None]: Valor
-Default region name [None]: us-east-1
-Default output format [None]: json
+Enviar modificações para a branch main requer:
 
->>2. iniciar o Terraform
-```terraform init
-```sh
+- Um PR aprovado (por membros do time e alguns serviços automatizados);
+No merging todas as mudanças serão automaticamente integradas pelo Github Actions.
 
->>3. validar os aqruivos
-```terraform validate
-```sh
+## Como Executar 
+Para executar localmente, siga as instruções abaixo:
 
->>4. salvar o plano de provisionamento
-```terraform plan --out plan.out
-```sh
+### Clonando o Repositório e Criando infraestrutura
 
->>5. aplicar o plano
-```terraform apply plan.out
-```sh
+1. Clone o repositório executando o comando:  
+`git clone https://github.com/SaraAWatanabe-org/infra-fastfood.git`
 
->>6. atualizar o kubeconfig (arquivo de configurações)
-```aws eks update-kubeconfig --region us-east-1 --name fastfood-cluster
-```sh
+2. Certifique-se que suas credenciais AWS esteja configuradas corretamente. [Mais Informações](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
 
->>7. acessar os nodes
-```kubectl get nodes
-```sh
+3. Execute o comando para baixar as dependências necessárias:
+`terraform init`
 
->>8. subir os demais serviços
-```kubectl apply --validate=false -f arquivo.yaml
-```sh
+4. caso tenha feito alguma alteração, execute os comando para formatar e validar os arquivos:
+`terraform fmt`
+`terraform validate`
 
->>9. destruir aks
-```terraform apply --destroy
-digitar: yes
+5. Execute o comando para criar um arquivo plan.out, contendo o planejamento do que será provisionado:
+`terraform plan -out plan.out" `
 
+6. Execute o comando para criar a infraestrutura:
+`terraform apply plan.out" `
+
+7. Após infraestrutura criada, você pode subir os demais arquivos .yaml.
+
+8. Utilize o seguinte comando para apagar a infraestrutura na AWS se necessário:
+`terraform destroy -var-file="variables.tfvars" `
 

@@ -1,12 +1,12 @@
-name: AKS deployment workflow
+name: EKS deployment workflow
 
 on:
   workflow_dispatch:
     inputs:
       cluster_name:
-        description: 'Fastfoof AKS cluster'
+        description: 'Fastfoof EKS cluster'
         required: true
-        default: 'aks-cluster'
+        default: 'eks-cluster'
       action:
         description: 'Deploy ou Destroy'
         required: true
@@ -18,8 +18,10 @@ on:
 
 jobs:
   terraform-apply:
+    if: ${{ github.event.inputs.action == 'terraform-apply' }}
     runs-on: ubuntu-latest
-
+    env:
+      REGION_DEFAULT: us-east-1
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -28,7 +30,6 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
         aws-region: ${{ env.REGION_DEFAULT }}
 
     - name: Setup Terraform
@@ -43,7 +44,7 @@ jobs:
       run: terraform validate
 
     - name: Terraform Plan
-      run: terraform plan -output=plan.out
+      run: terraform plan -out plan.out
 
     - name: Terraform Apply
       run: terraform apply plan.out 
@@ -52,18 +53,33 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   terraform-destroy: 
+    if: ${{ github.event.inputs.action == 'terraform-destroy' }}
     runs-on: ubuntu-latest
+    env:
+      REGION_DEFAULT: us-east-1
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.REGION_DEFAULT }}
+        
     - name: Checkout repository
       uses: actions/checkout@v2
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
       with:
-        terraform_version: 1.0.0
+        terraform_version: 1.8.0
+    - name: Terraform Init
+      run: terraform init
 
+    - name: Terraform Validate
+      run: terraform validate
 
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      
