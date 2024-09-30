@@ -1,12 +1,12 @@
-name: AKS deployment workflow
+name: EKS deployment workflow
 
 on:
   workflow_dispatch:
     inputs:
       cluster_name:
-        description: 'Fastfoof AKS cluster'
+        description: 'Fastfoof EKS cluster'
         required: true
-        default: 'aks-cluster'
+        default: 'eks-cluster'
       action:
         description: 'Deploy ou Destroy'
         required: true
@@ -19,7 +19,8 @@ on:
 jobs:
   terraform-apply:
     runs-on: ubuntu-latest
-
+    env:
+      REGION_DEFAULT: us-east-1
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -28,7 +29,6 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
         aws-region: ${{ env.REGION_DEFAULT }}
 
     - name: Setup Terraform
